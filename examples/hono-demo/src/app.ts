@@ -12,7 +12,7 @@ app.use('*', logger());
 app.get('/', (c) => {
   return c.json({
     name: 'Hono Modular Demo',
-    version: '1.0.0',
+    version: '1.1.0',
     status: 'Running',
   });
 });

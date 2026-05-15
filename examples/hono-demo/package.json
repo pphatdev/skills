@@ -1,6 +1,6 @@
 {
   "name": "hono-demo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Modular Hono.js Demo following project standards",
   "type": "module",
   "main": "src/app.ts",
@@ -23,6 +23,8 @@
     "@types/node": "^20.12.12",
     "tsx": "^4.10.5",
     "typescript": "^5.4.5",
-    "vitest": "^4.1.6"
+    "vite": "^5.0.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^2.1.1"
   }
 }

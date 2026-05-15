@@ -1,6 +1,6 @@
-# Hono Modular Demo
+# Hono Modular Demo (v1.1.0)
 
-This is a demonstration of a modular Hono.js application following the institutionalized project standards.
+A modular **Hono.js** application template for Node.js environments, following institutionalized agent skills and architectural standards.
 
 ## Project Structure
 
@@ -32,3 +32,15 @@ This is a demonstration of a modular Hono.js application following the instituti
 - **Type Safety**: 100% TypeScript coverage with Zod validation.
 - **Node.js Compatibility**: Supports Node.js 20, 22, and 24.
 - **Package Safety**: Uses stable releases and consistent lock files.
+
+## Testing
+
+Run feature tests using Vitest:
+
+```bash
+npm test
+```
+
+## Documentation
+
+API documentation is maintained via Postman collections in the `doc/collections` directory.
