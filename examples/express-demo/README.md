@@ -16,7 +16,7 @@ This is a demonstration of a Node.js application built with Express.js, followin
 
 ### Prerequisites
 
-- Node.js (v16+)
+- Node.js (v20+)
 - npm or yarn
 
 ### Installation
@@ -34,6 +34,16 @@ npm run dev
 # Production build
 npm run build
 npm start
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npx vitest
 ```
 
 ## Project Structure
