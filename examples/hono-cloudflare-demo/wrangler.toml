@@ -1,0 +1,19 @@
+name = "hono-cloudflare-demo"
+main = "src/index.ts"
+compatibility_date = "2023-12-01"
+
+# [vars]
+# MY_VARIABLE = "my-variable-value"
+
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "my-db"
+# database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"

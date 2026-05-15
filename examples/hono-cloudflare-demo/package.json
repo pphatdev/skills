@@ -1,0 +1,24 @@
+{
+  "name": "hono-cloudflare-demo",
+  "version": "1.0.0",
+  "description": "Demo Hono application for Cloudflare Workers following modular architecture",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy src/index.ts",
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.1.1",
+    "hono": "^3.11.7",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "wrangler": "^3.22.1"
+  }
+}
