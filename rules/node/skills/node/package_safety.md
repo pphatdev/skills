@@ -13,7 +13,9 @@ Use this skill when adding, updating, or auditing dependencies in the project. E
 ### 2. Vulnerability Management
 - **Audit**: Every dependency change **must** be followed by `npm audit`.
 - **Critical Fixes**: All "High" and "Critical" vulnerabilities must be addressed before merging changes.
-- **Legacy Peer Deps**: Avoid using `--force` or `--legacy-peer-deps` unless the conflict is thoroughly understood and documented.
+- **Transitive Vulnerabilities**: If a vulnerability exists in a sub-dependency (transitive dependency), use the `overrides` section in `package.json` to force a secure version without waiting for the parent package to update.
+- **Audit Fix Caution**: Avoid using `npm audit fix --force` as it may perform destructive major version upgrades. Prefer manual updates or specific `overrides` for precision.
+- **Legacy Peer Deps**: Avoid using `--legacy-peer-deps` unless the conflict is thoroughly understood and documented.
 
 ### 3. Dependency Selection
 - **Popularity & Maintenance**: Prefer packages that are actively maintained and have a strong community reputation.
@@ -26,4 +28,10 @@ Use this skill when adding, updating, or auditing dependencies in the project. E
 
 ## Troubleshooting
 - **ERESOLVE Errors**: If `npm install` fails with `ERESOLVE`, investigate the version mismatch instead of forcing the installation. Often, an upgrade to a major version of a core library (like Hono) is required.
-- **Audit Failures**: If a vulnerability is found in a sub-dependency, use `overrides` (npm) or `resolutions` (yarn) as a last resort to force a safer version.
+- **Audit Failures**: If a vulnerability is found in a sub-dependency, use `overrides` (npm) to force a safer version. Example:
+  ```json
+  "overrides": {
+    "esbuild": "^0.25.0"
+  }
+  ```
+- **Major Upgrades**: When an audit fix requires a major version upgrade (e.g., Vite 5 to 8), verify breaking changes and Node.js compatibility (e.g., Vite 8 requires Node.js 20.19+ or 22.12+) before proceeding.
