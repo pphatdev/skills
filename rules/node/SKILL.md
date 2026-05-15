@@ -34,7 +34,7 @@ This directory contains specialized rules and guidelines for AI agents working o
 
 ### 8. Testing Standards & Patterns
 - **Path**: `skills/testing/SKILL.md`
-- **Description**: Comprehensive rules for Vitest implementation, Hono/Express testing patterns, and database isolation.
+- **Description**: Comprehensive rules for Vitest implementation, Hono/Express testing patterns, database isolation, and test case priority (P0/P1/P2).
 
 ### 9. Agent Best Practices
 - **Path**: `agent/`

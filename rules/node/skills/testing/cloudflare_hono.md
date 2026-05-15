@@ -8,6 +8,7 @@ Use this skill when implementing tests for Hono applications running on Cloudfla
 - **Test Runner**: Vitest
 - **Environment**: `@cloudflare/vitest-pool-workers`
 - **Config**: `vitest.config.ts` or `wrangler.test.jsonc`
+- **Vitest Compatibility**: Use a `vitest` version compatible with the pool's peer dependencies (typically `^2.1.x`).
 
 ## 📋 Integration Testing Pattern
 
@@ -15,11 +16,10 @@ Use this skill when implementing tests for Hono applications running on Cloudfla
 The test pool simulates a real Worker environment. You access the worker via `SELF`. Below is a comprehensive example testing an Articles API with pagination, validation, and authentication.
 
 ```typescript
-import { env, exports } from "cloudflare:workers";
+import { env, SELF } from "cloudflare:test";
 import { describe, it, expect, beforeAll } from "vitest";
 import { seedDatabase, ARTICLE_SLUG, ARTICLE_ID, getAuthHeaders } from "../../apps/shared/helpers/test-cases";
 
-const SELF = exports.default;
 let authHeaders: Record<string, string>;
 const NONEXISTENT_UUID = "00000000-0000-4000-8000-000000000099";
 
@@ -102,7 +102,7 @@ describe("Articles API", () => {
 You can access and manipulate bindings directly through the `env` object provided by the pool.
 
 ```typescript
-import { env } from "cloudflare:workers";
+import { env } from "cloudflare:test";
 import { beforeAll, it, expect } from "vitest";
 
 it("should interact with D1 database", async () => {
@@ -142,9 +142,10 @@ it('should validate user input', async () => {
 6. **Type Casting**: Use `as Record<string, unknown>` or specific interfaces when parsing JSON response bodies in tests.
 
 ## ⚠️ Common Pitfalls
-- **Missing `nodejs_compat`**: If your tests use Node.js globals, ensure the flag is enabled in both `wrangler.toml` and the Vitest config.
+- **Missing `nodejs_compat`**: The `@cloudflare/vitest-pool-workers` MANDATORY requires the `nodejs_compat` or `nodejs_compat_v2` flag in `wrangler.toml` to function. Ensure it is added to your configuration.
 - **Async Leakage**: Always await database operations before the test finishes to avoid background execution errors.
 - **Binding Names**: Ensure the property names in the `env` object match the bindings in `wrangler.toml`.
+- **Version Conflicts**: If `npm install` fails with `ERESOLVE`, verify that the `vitest` version matches the `@cloudflare/vitest-pool-workers` peer dependency range.
 
 ## 🔗 Related Skills
 - [Cloudflare Workers](../cloudflare/cloudflare_workers.md)

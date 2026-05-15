@@ -62,11 +62,20 @@ For projects targeting Cloudflare Edge, use the official Worker pool.
 - **Dedicated Test DB**: Always use a separate database for tests (e.g., `test.sqlite` or a dedicated Docker container).
 - **Seeding**: Use shared helpers to seed required lookups and initial data.
 
+### 6. Test Priority
+Categorize test cases by priority to ensure critical functionality is verified first:
+- **P0 (Critical)**: Core business flows, authentication/authorization, and data persistence (Happy Paths). Mandatory for all features.
+- **P1 (High)**: Input validation (Zod "Bad Data"), error handling, and major feature variants.
+- **P2 (Normal)**: Edge cases, performance benchmarks, and non-critical UI/UX logic.
+
 ## ⚠️ Best Practices
 - **No Side Effects**: Tests must not rely on the state of previous tests.
 - **Mock External APIs**: Never call real third-party APIs (Stripe, OpenAI, etc.) during tests. Use `vi.mock()`.
 - **Zod Validation Tests**: Always include "Bad Data" test cases to verify that Zod validators are working correctly.
 - **Coverage**: Aim for 100% coverage on critical business logic.
+- **Tool Versions**: Always use the latest stable versions of testing tools (Vitest, Supertest). Ensure compatibility with the project's supported Node.js versions (>=20) and specialized test pools (e.g., Cloudflare).
+- **Peer Dependency Awareness**: When using specialized test pools (like `@cloudflare/vitest-pool-workers`), always check for peer dependency constraints on the `vitest` version to avoid installation conflicts.
+- **Path Aliases**: When using custom path aliases (e.g., `@apps/*`), ensure the test runner is configured to resolve them (e.g., using `vite-tsconfig-paths` for Vitest). Explicitly add `vite` as a devDependency if using a `vitest.config.ts`.
 
 ## 🔗 Related Skills
 - [Node.js Best Practices](../node/SKILL.md)

@@ -21,6 +21,8 @@ Feature tests are located in:
 6. **API Calls**: Use `SELF.fetch("http://example.com/v1/api/...")` to make requests to the worker.
 7. **Mocking**: Use `vi.fn()` or `vi.mock()` to isolate the feature from external services (e.g., AI, R2, external APIs).
 8. **Assertions**: Use descriptive `expect` calls to verify status codes, headers, and body content.
+9. **Test Priority**: Categorize test cases into P0 (Critical), P1 (High), and P2 (Normal) as defined in [Testing Skill](../skills/testing/SKILL.md). P0 and P1 tests are mandatory.
+10. **Tool Compatibility**: Always use the latest stable versions of testing tools (Vitest, Supertest) that are compatible with the project's supported Node.js versions (>=20).
 
 ## Example Structure (Hono + Cloudflare)
 
