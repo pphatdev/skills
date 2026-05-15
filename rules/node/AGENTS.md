@@ -20,6 +20,7 @@ Apply the following specialized patterns based on the task domain:
 - **Node.js**: [Node.js Best Practices](skills/node/node_practices.md), [Node Versioning](skills/node/node_versions.md), [Package Safety](skills/node/package_safety.md), [Hono Patterns](skills/node/hono_patterns.md), and [DTO Standards](skills/dto/SKILL.md).
 - **Cloudflare**: [Cloudflare Workers Development](skills/cloudflare/cloudflare_workers.md) (D1, KV, R2).
 - **Database**: [Multi-Tenancy Isolation](skills/database/multi_tenancy.md) and [ORM Patterns (Drizzle/TypeORM)](skills/orm/SKILL.md).
+- **Testing**: [Hono/Express Testing Patterns](skills/testing/SKILL.md) and [Vitest Integration](agent/testing.md).
 - **Postman**: [Postman Collection Standards](skills/postman/postman_rules.md) for mandatory API documentation sync.
 
 ## 4. General Compliance

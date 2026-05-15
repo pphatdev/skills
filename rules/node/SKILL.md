@@ -32,6 +32,10 @@ This directory contains specialized rules and guidelines for AI agents working o
 - **Path**: `skills/cloudflare/SKILL.md`
 - **Description**: Rules for Cloudflare Workers, D1 Database, KV Storage, and R2 Buckets.
 
-### 8. Agent Best Practices
+### 8. Testing Standards & Patterns
+- **Path**: `skills/testing/SKILL.md`
+- **Description**: Comprehensive rules for Vitest implementation, Hono/Express testing patterns, and database isolation.
+
+### 9. Agent Best Practices
 - **Path**: `agent/`
-- **Description**: Core rules for [Interaction Protocol](agent/protocol.md), [Data Safety](agent/data_safety.md), documentation standards, testing flows, and versioning protocols.
+- **Description**: Core rules for [Interaction Protocol](agent/protocol.md), [Data Safety](agent/data_safety.md), documentation standards, [Testing Protocols](agent/testing.md), and versioning protocols.

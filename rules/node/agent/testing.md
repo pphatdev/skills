@@ -22,12 +22,12 @@ Feature tests are located in:
 7. **Mocking**: Use `vi.fn()` or `vi.mock()` to isolate the feature from external services (e.g., AI, R2, external APIs).
 8. **Assertions**: Use descriptive `expect` calls to verify status codes, headers, and body content.
 
-## Example Structure
+## Example Structure (Hono + Cloudflare)
 
 ```typescript
 import { env, exports } from "cloudflare:workers";
-import { beforeAll, afterEach, describe, expect, it, vi } from "vitest";
-import { getAuthHeaders, seedDatabase } from "../../apps/shared/helpers/test-cases";
+import { describe, it, expect, beforeAll } from "vitest";
+import { seedDatabase, ARTICLE_SLUG, ARTICLE_ID, getAuthHeaders } from "../../apps/shared/helpers/test-cases";
 
 const SELF = exports.default;
 let authHeaders: Record<string, string>;
@@ -37,20 +37,27 @@ beforeAll(async () => {
   authHeaders = await getAuthHeaders(env.JWT_SECRET);
 });
 
-afterEach(() => {
-  vi.restoreAllMocks();
-});
-
-describe("Feature Name API", () => {
-  it("GET /v1/api/feature returns success", async () => {
-    const res = await SELF.fetch("http://example.com/v1/api/feature", {
-      method: "GET",
-      headers: authHeaders,
-    });
-
+describe("Articles API", () => {
+  it("GET /v1/api/articles returns paginated list", async () => {
+    const res = await SELF.fetch("http://example.com/v1/api/articles?page=1&limit=10");
     expect(res.status).toBe(200);
-    const body = await res.json();
+    const body = await res.json() as Record<string, unknown>;
     expect(body).toHaveProperty("data");
+    expect(body).toHaveProperty("pagination");
+  });
+
+  it("POST /v1/api/articles creates article (201)", async () => {
+    const res = await SELF.fetch("http://example.com/v1/api/articles", {
+      method: "POST",
+      headers: authHeaders,
+      body: JSON.stringify({
+        title: "New Test Article",
+        slug: "new-test-article",
+        description: "A newly created article.",
+        content: "# New content",
+      }),
+    });
+    expect(res.status).toBe(201);
   });
 });
 ```
