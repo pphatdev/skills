@@ -5,12 +5,22 @@
     "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
-    "lib": ["ESNext"],
-    "types": ["@cloudflare/workers-types"],
+    "lib": [
+      "ESNext"
+    ],
+    "types": [
+      "@cloudflare/workers-types",
+      "@cloudflare/vitest-pool-workers"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@apps/*": ["src/*"]
+      "@apps/*": [
+        "src/*"
+      ]
     }
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
 }
