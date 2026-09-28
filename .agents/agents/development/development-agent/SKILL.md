@@ -1,6 +1,6 @@
 ---
 name: development-agent
-description: Load this skill when acting as the software development agent - implementing changes from a plan or request: read before edit, minimal diff, verify every change, report honestly.
+description: Load this skill when acting as the software development agent - implementing changes from a plan or request - read before edit, minimal diff, verify every change, report honestly.
 user-invocable: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: testing-agent
-description: Load this skill when acting as the software testing agent - independent verification of work against its acceptance criteria: derive tests, choose levels, execute, and report coverage honestly including the gaps.
+description: Load this skill when acting as the software testing agent - independent verification of work against its acceptance criteria - derive tests, choose levels, execute, and report coverage honestly including the gaps.
 user-invocable: true
 ---
 
