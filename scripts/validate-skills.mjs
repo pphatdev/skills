@@ -138,10 +138,19 @@ for (const file of files) {
   const description = fm["description"];
   if (!description) {
     errors.push(`${rel}: missing required frontmatter key 'description'`);
-  } else if (description.length > 1024) {
-    errors.push(
-      `${rel}: description must be 1-1024 chars (got ${description.length})`
-    );
+  } else {
+    if (description.length > 1024) {
+      errors.push(
+        `${rel}: description must be 1-1024 chars (got ${description.length})`
+      );
+    }
+    // Unquoted YAML scalars cannot contain ': ' - strict parsers (e.g. the
+    // skills.sh CLI) reject the whole skill. House style is to rephrase.
+    if (description.includes(": ")) {
+      errors.push(
+        `${rel}: description contains ': ' - invalid in unquoted YAML; strict parsers reject it (rephrase or quote the value)`
+      );
+    }
   }
 
   // user-invocable
