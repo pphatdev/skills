@@ -32,7 +32,7 @@ bridged.
 │   ├── ISSUE_TEMPLATE/          bug report, skill request
 │   └── CODEOWNERS
 ├── scripts/
-│   └── validate-skills.ts     frontmatter and name validation (CI-ready)
+│   └── validate-skills.sh     frontmatter and name validation (CI-ready)
 └── README.md
 ```
 
@@ -100,15 +100,15 @@ Conventions this repo enforces:
 ## Adding a skill
 
 1. Create `.agents/skills/<skill-name>/SKILL.md` with valid frontmatter.
-2. Validate: `node scripts/validate-skills.ts` - must exit 0.
+2. Validate: `sh scripts/validate-skills.sh` - must exit 0.
 3. Reload in your session with `/reload` (Vibe) or start a new session
    (other agents).
 
 ## Validation
 
 ```bash
-node scripts/validate-skills.ts              # checks .agents/
-node scripts/validate-skills.ts DIR           # checks another root
+sh scripts/validate-skills.sh              # checks .agents/
+sh scripts/validate-skills.sh DIR           # checks another root
 ```
 
 Exit code 0 means every skill passes: name slug and directory match,
@@ -177,7 +177,7 @@ skills.sh. To publish the role skills too, they would move under
 
 | Job | When | What it does |
 |---|---|---|
-| validate | PR + push | `validate-skills.ts` - frontmatter, names, duplicates |
+| validate | PR + push | `validate-skills.sh` - frontmatter, names, duplicates |
 | discovery | PR + push | `npx skills add . --list` - the skills.sh CLI must find the collection with no parse errors |
 
 ## Installation

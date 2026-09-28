@@ -16,7 +16,7 @@ loadable in every supported agent; the README covers the background.
 4. Validate and commit:
 
    ```bash
-   node scripts/validate-skills.ts
+   sh scripts/validate-skills.sh
    ```
 
 5. CI runs validation plus a skills.sh discovery smoke test.
