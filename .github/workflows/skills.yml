@@ -1,0 +1,79 @@
+name: Skills
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skills-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate canonical skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate frontmatter, names, duplicates
+        run: node scripts/validate-skills.mjs
+
+  check-mirrors:
+    name: Check agent mirrors are in sync
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fail if mirrors drifted from .agents/
+        run: node scripts/sync-agent-skills.mjs --check
+
+  discovery:
+    name: skills.sh discovery smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The skills.sh CLI must discover the collection cleanly
+        run: |
+          set -o pipefail
+          npx --yes skills add . --list 2>&1 | tee discovery.log
+          ! grep -q "YAML parse error" discovery.log
+          grep -q "Found " discovery.log
+
+  sync:
+    name: Auto-sync agent mirrors
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Regenerate mirrors from .agents/
+        run: node scripts/sync-agent-skills.mjs
+      - name: Commit and push drift
+        run: |
+          git config user.name "skills-sync[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .claude .gemini .codex
+          if git diff --cached --quiet; then
+            echo "Mirrors already in sync - nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore(skills): sync agent mirrors [skip ci]"
+          git push
