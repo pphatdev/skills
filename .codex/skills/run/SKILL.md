@@ -2,6 +2,8 @@
 name: run
 description: Load this skill when executing a defined task or workflow end to end - orchestrating steps, tools, and progress reporting until the acceptance criterion is met and verified.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Run

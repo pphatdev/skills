@@ -2,6 +2,8 @@
 name: technical-documentation
 description: Load this skill when writing documentation for engineers - architecture overviews, internals, contributor guides, and decision records. Also load when a change is significant enough to need a written rationale.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Technical Documentation

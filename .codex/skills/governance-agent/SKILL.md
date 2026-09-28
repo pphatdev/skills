@@ -2,6 +2,8 @@
 name: governance-agent
 description: Load this skill when acting as the governance agent - auditing work against the project's coding, security, and performance standards, and reporting violations with severity, location, evidence, and remediation. Audit only; no unauthorized fixes.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Governance Agent

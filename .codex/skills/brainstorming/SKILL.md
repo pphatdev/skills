@@ -2,6 +2,8 @@
 name: brainstorming
 description: Load this skill when the task needs idea generation and exploration - feature ideation, solution options, or concept work - before any direction is chosen. Also load when a design decision has more than one viable path and the trade-offs are not obvious.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Brainstorming

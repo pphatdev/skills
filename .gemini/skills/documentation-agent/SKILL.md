@@ -2,6 +2,8 @@
 name: documentation-agent
 description: Load this skill when acting as the documentation agent - creating and maintaining user, technical, and API documentation in sync with the code, with validated procedures and a defined audience.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Documentation Agent

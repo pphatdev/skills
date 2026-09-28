@@ -2,6 +2,8 @@
 name: end-to-end-testing
 description: Load this skill when verifying complete user journeys through the real stack - journey selection, deterministic data, wait strategies, flakiness protocol, and suite budget.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # End-to-End Testing

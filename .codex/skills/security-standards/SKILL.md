@@ -2,6 +2,8 @@
 name: security-standards
 description: Load this skill when touching security-sensitive code - authentication, authorization, input handling, secrets, permissions, dependencies, or anything exposed to untrusted input.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Security Standards

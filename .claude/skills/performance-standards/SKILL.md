@@ -2,6 +2,8 @@
 name: performance-standards
 description: Load this skill when performance matters - optimization work, suspected regressions, resource-sensitive code paths, or capacity planning.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Performance Standards

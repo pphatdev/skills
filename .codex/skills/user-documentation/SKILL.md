@@ -2,6 +2,8 @@
 name: user-documentation
 description: Load this skill when writing documentation for end users - guides, how-tos, onboarding, and task-oriented help content. Also load when reviewing existing user-facing docs for accuracy or structure.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # User Documentation

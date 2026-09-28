@@ -2,6 +2,8 @@
 name: agent-start
 description: Load this skill at the beginning of any new task, session, or conversation, before other work. Defines the standard startup contract - orient, establish the instruction baseline, confirm the goal, plan, and start with a definition of done.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Agent Start

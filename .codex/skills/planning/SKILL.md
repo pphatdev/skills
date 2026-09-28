@@ -2,6 +2,8 @@
 name: planning
 description: Load this skill when turning a goal, request, or research findings into an executable plan - scope, sequencing, milestones, risks, and per-step acceptance criteria. Load before starting any multi-step change.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Planning

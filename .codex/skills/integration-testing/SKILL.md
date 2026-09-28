@@ -2,6 +2,8 @@
 name: integration-testing
 description: Load this skill when verifying that components work together - contracts, module boundaries, data flow across seams, and interactions with real dependencies.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Integration Testing

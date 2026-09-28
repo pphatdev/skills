@@ -2,6 +2,8 @@
 name: coding-standards
 description: Load this skill when writing or reviewing code - naming, structure, style, and diff discipline this project enforces. Load before any edit or code review.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Coding Standards

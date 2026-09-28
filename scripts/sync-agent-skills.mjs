@@ -96,6 +96,23 @@ function listFiles(dir, prefix = "") {
 
 const hash = (buf) => createHash("sha256").update(buf).digest("hex");
 
+/**
+ * Mirrored skills are marked internal so the skills.sh CLI (npx skills)
+ * hides them from discovery: it scans both .agents/skills/ and
+ * .claude/skills/, and without this marker every skill would be listed
+ * twice. Internal skills appear only with INSTALL_INTERNAL_SKILLS=1.
+ * Claude Code ignores unknown frontmatter keys, so local use of the
+ * mirrors is unaffected.
+ */
+function markInternal(text) {
+  const lines = text.split(/\r?\n/);
+  const end = lines.indexOf("---", 1);
+  if (end === -1) return text;
+  if (lines.slice(1, end).some((l) => /^metadata:/.test(l))) return text;
+  lines.splice(end, 0, "metadata:", "  internal: true");
+  return lines.join("\n");
+}
+
 const check = process.argv.includes("--check");
 const skills = findSkills();
 if (skills.length === 0) {
@@ -109,7 +126,11 @@ for (const target of TARGETS) {
   const expected = new Map(); // relpath -> sha256
   for (const skill of skills) {
     for (const f of listFiles(skill.dir)) {
-      expected.set(`${skill.name}/${f.rel}`, hash(readFileSync(f.full)));
+      const content =
+        f.rel === "SKILL.md"
+          ? markInternal(readFileSync(f.full, "utf8"))
+          : readFileSync(f.full);
+      expected.set(`${skill.name}/${f.rel}`, hash(content));
     }
   }
 
@@ -142,6 +163,8 @@ for (const target of TARGETS) {
   writeFileSync(join(target.dir, "GENERATED.md"), NOTICE(target.agent));
   for (const skill of skills) {
     cpSync(skill.dir, join(target.dir, skill.name), { recursive: true });
+    const skillFile = join(target.dir, skill.name, "SKILL.md");
+    writeFileSync(skillFile, markInternal(readFileSync(skillFile, "utf8")));
   }
   console.log(`${target.dir}: mirrored ${skills.length} skills (${target.agent})`);
 }

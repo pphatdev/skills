@@ -2,6 +2,8 @@
 name: design-agent
 description: Load this skill when acting as the product design agent - framing problems, generating and evaluating options, synthesizing research, and producing executable plans with acceptance criteria for other agents to implement. For UI or visual work, includes gathering the user's inspiration references (theme, color, style) before designing.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Design Agent

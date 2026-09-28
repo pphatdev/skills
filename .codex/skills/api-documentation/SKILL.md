@@ -2,6 +2,8 @@
 name: api-documentation
 description: Load this skill when documenting an API - endpoints, parameters, schemas, examples, error catalogs, auth, versioning, and deprecation policy.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # API Documentation

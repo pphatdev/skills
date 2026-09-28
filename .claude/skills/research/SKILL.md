@@ -2,6 +2,8 @@
 name: research
 description: Load this skill when the task requires gathering and verifying information - codebase investigation, external research, dependency evaluation, or fact-finding before design or planning work.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Research

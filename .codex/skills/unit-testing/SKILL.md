@@ -2,6 +2,8 @@
 name: unit-testing
 description: Load this skill when writing or reviewing unit tests - verifying individual functions or modules in isolation, fast and deterministic.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Unit Testing

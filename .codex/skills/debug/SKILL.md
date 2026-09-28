@@ -2,6 +2,8 @@
 name: debug
 description: Load this skill when diagnosing a defect, failure, crash, or unexpected behavior - reproduce, observe, isolate, hypothesize, fix the root cause minimally, and verify.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Debug

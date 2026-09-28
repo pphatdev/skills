@@ -2,6 +2,8 @@
 name: test
 description: Load this skill when verifying that code works - deriving test cases from acceptance criteria, choosing the right test level, running the tests, and reporting results honestly, including what is not covered.
 user-invocable: true
+metadata:
+  internal: true
 ---
 
 # Test
