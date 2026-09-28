@@ -92,9 +92,9 @@ node scripts/sync-agent-skills.mjs --check     # mirrors must match source
 ```
 
 Exit code 0 means every skill passes: name slug and directory match,
-description length, no unknown frontmatter keys, no reserved or duplicate
-names, and the agent mirrors are current. Wire all three into CI as
-blocking steps.
+description length and YAML-safe values, no unknown frontmatter keys, no
+reserved or duplicate names, and the agent mirrors are current. Wire all
+three into CI as blocking steps.
 
 ## Multi-agent support
 
@@ -147,6 +147,40 @@ Known caveat: Codex also scans `.agents/skills/` in repositories with
 undocumented depth. If it scans recursively, Codex sees each skill twice
 (same name and content - harmless, but noisy). If that happens, remove
 `.codex/skills/` from the sync targets and rely on Codex's native scan.
+
+### skills.sh support (`npx skills`)
+
+The [skills.sh](https://skills.sh) CLI installs skills from a GitHub
+repository into any of its supported agents:
+
+```bash
+npx skills add <owner>/agent-workflows-engineering --list      # list first
+npx skills add <owner>/agent-workflows-engineering             # interactive
+npx skills add <owner>/agent-workflows-engineering --skill debug -a claude-code -y
+```
+
+How this repo supports it:
+
+- The canonical workflow skills under `.agents/skills/` are discovered
+  natively: the CLI walks its discovery containers up to three levels
+  deep, which covers the category layout.
+- Generated mirrors are marked `metadata.internal: true` - the CLI's
+  documented mechanism for hiding skills from discovery. Without it,
+  every skill would be listed twice, because `.claude/skills/` is also
+  a discovery container. Verified against the real CLI: 15 skills
+  listed, no duplicates, no warnings.
+- Frontmatter values must not contain `': '`: unquoted YAML scalars
+  with a colon-space break strict parsers (the CLI skips such skills
+  entirely). The validator rejects them.
+- Publishing is pushing to GitHub - this repo has no remote yet. Once
+  users install from it, the collection appears on the skills.sh
+  leaderboard automatically via anonymous install telemetry.
+
+Known scope: the six role skills under `.agents/agents/` are not
+discoverable by the CLI, because `.agents/agents/` is not one of its
+discovery containers - only the 15 workflow skills install via
+skills.sh. To publish the role skills too, they would move under
+`.agents/skills/agents/<name>/SKILL.md`.
 
 ## Using the collection in a project
 
