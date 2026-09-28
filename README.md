@@ -1,27 +1,42 @@
 # agent-workflows-engineering
 
-A curated collection of skills for agent workflows, authored for the
-[Mistral Vibe](https://docs.mistral.ai/vibe/code/overview) CLI (and any
-agent that reads the Agent Skills `SKILL.md` format).
+A curated collection of skills for agent workflows, following the open
+[Agent Skills](https://agentskills.io) `SKILL.md` format. The same 21
+skills load natively in Mistral Vibe, Claude Code, Gemini CLI, Codex,
+Cursor, and OpenCode - see [Multi-agent support](#multi-agent-support)
+for how each agent is bridged.
 
 ## Structure
 
 ```
-.agents/
-├── skills/                  workflow skills: how to do a thing
-│   ├── design/              brainstorming, research, planning
-│   ├── development/         run, debug, test
-│   ├── testing/             unit-testing, integration-testing, end-to-end-testing
-│   ├── documentation/       user-documentation, technical-documentation, api-documentation
-│   └── rules/               coding-standards, security-standards, performance-standards
-└── agents/                  agent role skills: who does it
-    ├── agent-start/         startup contract for every session
-    ├── design/design-agent/
-    ├── development/development-agent/
-    ├── testing/testing-agent/
-    ├── documentation/documentation-agent/
-    └── rules/governance-agent/
+.
+├── .agents/                 canonical skills - edit here
+│   ├── skills/              workflow skills: how to do a thing
+│   │   ├── design/          brainstorming, research, planning
+│   │   ├── development/     run, debug, test
+│   │   ├── testing/         unit-testing, integration-testing, end-to-end-testing
+│   │   ├── documentation/   user-documentation, technical-documentation, api-documentation
+│   │   └── rules/           coding-standards, security-standards, performance-standards
+│   └── agents/              role skills: who does it
+│       ├── agent-start/     startup contract for every session
+│       ├── design/          design-agent
+│       ├── development/     development-agent
+│       ├── testing/         testing-agent
+│       ├── documentation/   documentation-agent
+│       └── rules/           governance-agent
+├── .claude/skills/          generated mirror (Claude Code; Cursor and OpenCode read it too)
+├── .gemini/skills/          generated mirror (Gemini CLI)
+├── .codex/skills/           generated mirror (Codex)
+├── .vibe/config.toml        Vibe skill_paths wiring
+├── scripts/
+│   ├── validate-skills.mjs     frontmatter and name validation (CI-ready)
+│   └── sync-agent-skills.mjs   regenerates the mirrors (--check for CI)
+└── README.md
 ```
+
+Canonical skills live only under `.agents/`; the other dotted
+directories are configuration (`.vibe/`) or generated output
+(`.claude/`, `.gemini/`, `.codex/`) - never edited by hand.
 
 Workflow skills define *how* to do a kind of work (debug, plan, test). Role
 skills define *how an agent operates* in a domain and compose the workflow
