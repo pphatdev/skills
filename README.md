@@ -36,6 +36,10 @@ bridged.
 │   └── CODEOWNERS
 ├── scripts/
 │   └── validate-skills.sh     frontmatter and name validation (CI-ready)
+├── samples/                 sample projects
+│   └── console-mistral-ai/
+├── assets/
+│   └── cover.jpg              README cover image
 └── README.md
 ```
 
@@ -151,9 +155,9 @@ The [skills.sh](https://skills.sh) CLI installs skills from a GitHub
 repository into any of its supported agents:
 
 ```bash
-npx skills add <owner>/agent-workflows-engineering --list      # list first
-npx skills add <owner>/agent-workflows-engineering             # interactive
-npx skills add <owner>/agent-workflows-engineering --skill debug -a claude-code -y
+npx skills add pphatdev/skills --list      # list first
+npx skills add pphatdev/skills             # interactive
+npx skills add pphatdev/skills --skill debug -a claude-code -y
 ```
 
 How this repo supports it:
@@ -164,9 +168,10 @@ How this repo supports it:
 - Frontmatter values must not contain `': '`: unquoted YAML scalars
   with a colon-space break strict parsers (the CLI skips such skills
   entirely). The validator rejects them.
-- Publishing is pushing to GitHub - this repo has no remote yet. Once
-  users install from it, the collection appears on the skills.sh
-  leaderboard automatically via anonymous install telemetry.
+- Publishing is pushing to GitHub - this collection is published at
+  github.com/pphatdev/skills. Once users install from it, the
+  collection appears on the skills.sh leaderboard automatically via
+  anonymous install telemetry.
 
 Known scope: the six role skills under `.agents/agents/` are not
 discoverable by the CLI, because `.agents/agents/` is not one of its
@@ -202,11 +207,11 @@ Every agent discovers the skills automatically:
 ### 2. Into another project - via skills.sh (recommended)
 
 ```bash
-npx skills add <owner>/agent-workflows-engineering --list     # preview
-npx skills add <owner>/agent-workflows-engineering            # interactive: pick skills and agents
-npx skills add <owner>/agent-workflows-engineering --all      # all skills, all detected agents
-npx skills add <owner>/agent-workflows-engineering --skill debug --skill planning -a claude-code -y
-npx skills add <owner>/agent-workflows-engineering -g         # global (~) instead of project
+npx skills add pphatdev/skills --list     # preview
+npx skills add pphatdev/skills            # interactive: pick skills and agents
+npx skills add pphatdev/skills --all      # all skills, all detected agents
+npx skills add pphatdev/skills --skill debug --skill planning -a claude-code -y
+npx skills add pphatdev/skills -g         # global (~) instead of project
 ```
 
 The CLI detects your installed agents and installs into each one's
@@ -222,27 +227,6 @@ The 20 workflow skills install this way; the six role skills are not
 discoverable by the CLI - see
 [skills.sh support](#skillssh-support-npx-skills).
 
-### 3. Manual - no tooling
-
-Each skill is a self-contained folder; copy it into your agent's
-skills directory:
-
-```
-.agents/skills/<skill-name>/  ->  <agent-skills-dir>/<skill-name>/
-```
-
-| Agent | Skills directory |
-|---|---|
-| Claude Code | `.claude/skills/` (project) or `~/.claude/skills/` (global) |
-| Gemini CLI | `.gemini/skills/` or `~/.gemini/skills/` |
-| Cursor | `.cursor/skills/` (also reads `.claude/skills/`) |
-| Codex | `.codex/skills/` or `~/.codex/skills/` |
-| OpenCode | `.agents/skills/` (also reads `.claude/skills/`) |
-| Mistral Vibe | `.agents/skills/`, `.vibe/skills/`, or `skill_paths` in config |
-
-For Vibe in another project, copy the `skill_paths` entries from this
-repo's `.vibe/config.toml` into your project's config, adjusting the
-paths - relative entries resolve from the directory where Vibe runs.
 
 ### Maintenance after install
 
