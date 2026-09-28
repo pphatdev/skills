@@ -2,9 +2,14 @@
 /**
  * Validates every SKILL.md in the collection.
  *
- * Usage:   node scripts/validate-skills.mjs [root]
+ * Usage:   node scripts/validate-skills.ts [root]
  *          root defaults to .agents (relative to the repo root)
  * Exit:    0 = all skills valid, 1 = validation errors found
+ *
+ * Runs on Node's native TypeScript support (type stripping), available
+ * without a flag since Node 22.18 and 23.6 - no build step, no tsconfig,
+ * no dependencies. Enums, namespaces, and parameter properties are not
+ * supported and must not be used here.
  *
  * Checks: frontmatter present and closed, name matches the slug regex and
  * the directory name, description present and within length, no unknown
@@ -15,9 +20,9 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, basename, dirname, relative } from "node:path";
 
-const root = process.argv[2] ?? ".agents";
+const root: string = process.argv[2] ?? ".agents";
 const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const RESERVED = new Set([
+const RESERVED = new Set<string>([
   "vibe",
   "worktree",
   "skill-creator",
@@ -25,7 +30,7 @@ const RESERVED = new Set([
   "code-review",
   "find-skills",
 ]);
-const KNOWN_KEYS = new Set([
+const KNOWN_KEYS = new Set<string>([
   "name",
   "description",
   "user-invocable",
@@ -35,12 +40,12 @@ const KNOWN_KEYS = new Set([
   "metadata",
 ]);
 
-const errors = [];
-const warnings = [];
-const seenNames = new Map(); // name -> file
+const errors: string[] = [];
+const warnings: string[] = [];
+const seenNames = new Map<string, string>(); // name -> file
 
-function findSkillFiles(dir) {
-  const out = [];
+function findSkillFiles(dir: string): string[] {
+  const out: string[] = [];
   let entries;
   try {
     entries = readdirSync(dir, { withFileTypes: true });
@@ -59,7 +64,7 @@ function findSkillFiles(dir) {
   return out;
 }
 
-function parseFrontmatter(text, file) {
+function parseFrontmatter(text: string, file: string): Record<string, string> {
   const lines = text.split(/\r?\n/);
   if (lines[0] !== "---") {
     errors.push(`${file}: missing frontmatter (must start with '---')`);
@@ -70,7 +75,7 @@ function parseFrontmatter(text, file) {
     errors.push(`${file}: unclosed frontmatter (missing closing '---')`);
     return {};
   }
-  const fm = {};
+  const fm: Record<string, string> = {};
   for (const line of lines.slice(1, end)) {
     const sep = line.indexOf(":");
     if (sep === -1 || sep === 0) continue;
@@ -95,11 +100,11 @@ if (files.length === 0) {
 for (const file of files) {
   const rel = relative(process.cwd(), file);
 
-  let text;
+  let text: string;
   try {
     text = readFileSync(file, "utf8");
   } catch (err) {
-    errors.push(`${rel}: unreadable (${err.message})`);
+    errors.push(`${rel}: unreadable (${err instanceof Error ? err.message : String(err)})`);
     continue;
   }
 

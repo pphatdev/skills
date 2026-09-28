@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 22
       - name: Validate frontmatter, names, duplicates
-        run: node scripts/validate-skills.mjs
+        run: node scripts/validate-skills.ts
 
   check-mirrors:
     name: Check agent mirrors are in sync

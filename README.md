@@ -35,7 +35,7 @@ for how each agent is bridged.
 │   ├── ISSUE_TEMPLATE/          bug report, skill request
 │   └── CODEOWNERS
 ├── scripts/
-│   ├── validate-skills.mjs     frontmatter and name validation (CI-ready)
+│   ├── validate-skills.ts     frontmatter and name validation (CI-ready)
 │   └── sync-agent-skills.mjs   regenerates the mirrors (--check for CI)
 └── README.md
 ```
@@ -83,7 +83,7 @@ Conventions this repo enforces:
    it - do not add categories speculatively).
 2. Create `<category>/<skill-name>/SKILL.md` with valid frontmatter.
 3. If the category is new, add it to `skill_paths` in `.vibe/config.toml`.
-4. Validate: `node scripts/validate-skills.mjs` - must exit 0.
+4. Validate: `node scripts/validate-skills.ts` - must exit 0.
 5. Sync the agent mirrors: `node scripts/sync-agent-skills.mjs` - and
    commit the regenerated output.
 6. Reload in your session with `/reload` (Vibe) or start a new session
@@ -92,8 +92,8 @@ Conventions this repo enforces:
 ## Validation
 
 ```bash
-node scripts/validate-skills.mjs              # checks .agents/
-node scripts/validate-skills.mjs DIR           # checks another root
+node scripts/validate-skills.ts              # checks .agents/
+node scripts/validate-skills.ts DIR           # checks another root
 node scripts/sync-agent-skills.mjs --check     # mirrors must match source
 ```
 
@@ -194,7 +194,7 @@ skills.sh. To publish the role skills too, they would move under
 
 | Job | When | What it does |
 |---|---|---|
-| validate | PR + push | `validate-skills.mjs` - frontmatter, names, duplicates |
+| validate | PR + push | `validate-skills.ts` - frontmatter, names, duplicates |
 | check-mirrors | PR | `sync-agent-skills.mjs --check` - fails the PR if mirrors drifted; run the sync locally and push |
 | discovery | PR + push | `npx skills add . --list` - the skills.sh CLI must find the collection with no parse errors |
 | sync | push only | regenerates the mirrors and auto-commits any drift as `skills-sync[bot]` |

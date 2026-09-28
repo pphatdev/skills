@@ -17,7 +17,7 @@ loadable in every supported agent; the README covers the background.
 4. Validate, sync, and commit the regenerated mirrors:
 
    ```bash
-   node scripts/validate-skills.mjs
+   node scripts/validate-skills.ts
    node scripts/sync-agent-skills.mjs
    ```
 

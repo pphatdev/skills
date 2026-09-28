@@ -9,7 +9,7 @@
 ## Checklist
 
 - [ ] Canonical skills edited under `.agents/` only - mirrors (`.claude/`, `.gemini/`, `.codex/`) are generated, never edited by hand
-- [ ] `node scripts/validate-skills.mjs` passes with 0 errors
+- [ ] `node scripts/validate-skills.ts` passes with 0 errors
 - [ ] `node scripts/sync-agent-skills.mjs` run and the regenerated mirrors are included in this PR
 - [ ] `node scripts/sync-agent-skills.mjs --check` passes
 - [ ] No reserved or duplicate skill names introduced (`vibe`, `worktree`, `skill-creator`, `create-plugin`, `code-review`, `find-skills` are reserved)
