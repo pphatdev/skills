@@ -63,18 +63,44 @@ Conventions this repo enforces:
 2. Create `<category>/<skill-name>/SKILL.md` with valid frontmatter.
 3. If the category is new, add it to `skill_paths` in `.vibe/config.toml`.
 4. Validate: `node scripts/validate-skills.mjs` - must exit 0.
-5. Reload in your session with `/reload`.
+5. Sync the agent mirrors: `node scripts/sync-agent-skills.mjs` - and
+   commit the regenerated output.
+6. Reload in your session with `/reload` (Vibe) or start a new session
+   (other agents).
 
 ## Validation
 
 ```bash
-node scripts/validate-skills.mjs        # checks .agents/
-node scripts/validate-skills.mjs DIR    # checks another root
+node scripts/validate-skills.mjs              # checks .agents/
+node scripts/validate-skills.mjs DIR           # checks another root
+node scripts/sync-agent-skills.mjs --check     # mirrors must match source
 ```
 
 Exit code 0 means every skill passes: name slug and directory match,
 description length, no unknown frontmatter keys, no reserved or duplicate
-names. Wire it into CI as a blocking step.
+names, and the agent mirrors are current. Wire all three into CI as
+blocking steps.
+
+## Multi-agent support
+
+Every agent discovers skills flat (`<dir>/<skill-name>/SKILL.md`, one
+level), while this collection organizes canonical skills by category.
+Each supported agent is bridged accordingly:
+
+| Agent | Discovery path | How it is provided |
+|---|---|---|
+| Mistral Vibe | `skill_paths` in `.vibe/config.toml` | committed config, points at category dirs |
+| Claude Code | `.claude/skills/` | generated mirror |
+| Gemini CLI | `.gemini/skills/` | generated mirror (run `/trust` first) |
+| Codex | `.codex/skills/` | generated mirror |
+| Cursor | reads `.claude/skills/` | via Claude Code compatibility |
+| OpenCode | reads `.claude/skills/` | via Claude Code compatibility |
+
+Mirrors are generated, not edited: `scripts/sync-agent-skills.mjs` wipes
+and rebuilds them from the canonical tree under `.agents/`, and
+`--check` fails if they drift. Symlinks were considered and rejected:
+they are unreliable in Windows git checkouts, and Claude Code is the only
+agent documented to follow them.
 
 ## Using the collection in a project
 
@@ -84,11 +110,12 @@ this repo ships `.vibe/config.toml` listing every category directory in
 
 - **This repo as the project**: trust the folder when prompted (Vibe only
   loads project-local `.vibe/config.toml` from trusted folders), then run
-  `/reload`.
+  `/reload`. The generated mirrors make the skills available in Claude
+  Code, Gemini CLI, Codex, Cursor, and OpenCode with no setup.
 - **Another project**: copy the `skill_paths` entries from this repo's
-  `.vibe/config.toml` into your project's (adjusting the paths), or
-  copy/symlink the skill directories into your project's
-  `.agents/skills/`.
+  `.vibe/config.toml` into your project's (adjusting the paths), or run
+  `node scripts/sync-agent-skills.mjs` from a checkout of this repo and
+  point your agent at the generated mirror directory of your choice.
 
 Relative `skill_paths` entries resolve from the working directory where
 Vibe runs.
