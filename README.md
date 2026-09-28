@@ -203,20 +203,70 @@ The sync job is the CD half: even if a change lands without running the
 sync locally, the mirrors are regenerated and pushed automatically with
 a `[skip ci]` commit.
 
-## Using the collection in a project
+## Installation
 
-Vibe discovers skills flat (`<dir>/<skill-name>/SKILL.md`, one level), so
-this repo ships `.vibe/config.toml` listing every category directory in
-`skill_paths`. Two ways to consume it:
+Three ways to get the skills, depending on where you start.
 
-- **This repo as the project**: trust the folder when prompted (Vibe only
-  loads project-local `.vibe/config.toml` from trusted folders), then run
-  `/reload`. The generated mirrors make the skills available in Claude
-  Code, Gemini CLI, Codex, Cursor, and OpenCode with no setup.
-- **Another project**: copy the `skill_paths` entries from this repo's
-  `.vibe/config.toml` into your project's (adjusting the paths), or run
-  `node scripts/sync-agent-skills.mjs` from a checkout of this repo and
-  point your agent at the generated mirror directory of your choice.
+### 1. Working inside this repository - zero install
 
-Relative `skill_paths` entries resolve from the working directory where
-Vibe runs.
+Every agent discovers the skills automatically:
+
+| Agent | Setup |
+|---|---|
+| Claude Code, Cursor, OpenCode | none - they read `.claude/skills/` on session start |
+| Gemini CLI | run `/trust` once - reads `.gemini/skills/` |
+| Codex | none - reads `.codex/skills/` and scans `.agents/skills/` |
+| Mistral Vibe | trust the folder when prompted, then `/reload` - `skill_paths` is already wired |
+
+### 2. Into another project - via skills.sh (recommended)
+
+```bash
+npx skills add <owner>/agent-workflows-engineering --list     # preview
+npx skills add <owner>/agent-workflows-engineering            # interactive: pick skills and agents
+npx skills add <owner>/agent-workflows-engineering --all      # all skills, all detected agents
+npx skills add <owner>/agent-workflows-engineering --skill debug --skill planning -a claude-code -y
+npx skills add <owner>/agent-workflows-engineering -g         # global (~) instead of project
+```
+
+The CLI detects your installed agents and installs into each one's
+skills directory. Add `--copy` where symlinks are unreliable (for
+example Windows without developer mode). A local checkout works the
+same way, before any GitHub push:
+
+```bash
+npx skills add /path/to/agent-workflows-engineering --list
+```
+
+The 15 workflow skills install this way; the six role skills are not
+discoverable by the CLI - see
+[skills.sh support](#skillssh-support-npx-skills).
+
+### 3. Manual - no tooling
+
+Each skill is a self-contained folder; copy it into your agent's
+skills directory:
+
+```
+.agents/skills/<category>/<skill-name>/  ->  <agent-skills-dir>/<skill-name>/
+```
+
+| Agent | Skills directory |
+|---|---|
+| Claude Code | `.claude/skills/` (project) or `~/.claude/skills/` (global) |
+| Gemini CLI | `.gemini/skills/` or `~/.gemini/skills/` |
+| Cursor | `.cursor/skills/` (also reads `.claude/skills/`) |
+| Codex | `.codex/skills/` or `~/.codex/skills/` |
+| OpenCode | `.agents/skills/` (also reads `.claude/skills/`) |
+| Mistral Vibe | `.agents/skills/`, `.vibe/skills/`, or `skill_paths` in config |
+
+For Vibe in another project, copy the `skill_paths` entries from this
+repo's `.vibe/config.toml` into your project's config, adjusting the
+paths - relative entries resolve from the directory where Vibe runs.
+
+### Maintenance after install
+
+```bash
+npx skills update          # pull the latest versions
+npx skills list            # see what is installed
+npx skills remove <name>   # uninstall
+```
