@@ -93,8 +93,8 @@ node scripts/sync-agent-skills.mjs --check     # mirrors must match source
 
 Exit code 0 means every skill passes: name slug and directory match,
 description length and YAML-safe values, no unknown frontmatter keys, no
-reserved or duplicate names, and the agent mirrors are current. Wire all
-three into CI as blocking steps.
+reserved or duplicate names, and the agent mirrors are current. All of
+this runs in CI - see [CI](#ci).
 
 ## Multi-agent support
 
@@ -181,6 +181,21 @@ discoverable by the CLI, because `.agents/agents/` is not one of its
 discovery containers - only the 15 workflow skills install via
 skills.sh. To publish the role skills too, they would move under
 `.agents/skills/agents/<name>/SKILL.md`.
+
+## CI
+
+`.github/workflows/skills.yml` runs on every pull request and push:
+
+| Job | When | What it does |
+|---|---|---|
+| validate | PR + push | `validate-skills.mjs` - frontmatter, names, duplicates |
+| check-mirrors | PR | `sync-agent-skills.mjs --check` - fails the PR if mirrors drifted; run the sync locally and push |
+| discovery | PR + push | `npx skills add . --list` - the skills.sh CLI must find the collection with no parse errors |
+| sync | push only | regenerates the mirrors and auto-commits any drift as `skills-sync[bot]` |
+
+The sync job is the CD half: even if a change lands without running the
+sync locally, the mirrors are regenerated and pushed automatically with
+a `[skip ci]` commit.
 
 ## Using the collection in a project
 
