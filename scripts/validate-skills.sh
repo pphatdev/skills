@@ -51,10 +51,9 @@ function emit_warn(m) { W[++nw] = m }
 
 function init() {
   fname = FILENAME
-  infm = 0; badstart = 0; hasbody = 0; hasinvoc = 0
+  infm = 0; badstart = 0; hasbody = 0; hasinvoc = 0; skip = 0
   name = ""; desc = ""; invoc = ""
   nkeys = 0
-  for (k in KEYS) delete KEYS[k]
 }
 
 function finish() {
@@ -75,8 +74,9 @@ function finish() {
   if (name == "") {
     emit_err(fname ": missing required frontmatter key " sq "name" sq)
   } else {
-    if (length(name) < 1 || length(name) > 64)
-      emit_err(fname ": name must be 1-64 chars (got " length(name) ")")
+    l = length(name)
+    if (l < 1 || l > 64)
+      emit_err(fname ": name must be 1-64 chars (got " l ")")
     if (name !~ /^[a-z0-9]+(-[a-z0-9]+)*$/)
       emit_err(fname ": name " sq name sq " must match ^[a-z0-9]+(-[a-z0-9]+)*$ (lowercase, digits, hyphens)")
     dir = fname
@@ -125,14 +125,23 @@ function finish() {
     init()
     nf++
   }
+  if (skip) next
+  # The body is ~all the bytes of a file, and only its first non-blank
+  # line matters - per-line work stops right there. Test the raw record
+  # (\r kept in the blank set so CRLF-only bodies still count as empty)
+  # instead of copying and CR-stripping every line.
+  if (infm == 2) {
+    if (!hasbody && $0 ~ /[^ \t\r]/) hasbody = 1
+    if (hasbody) skip = 1
+    next
+  }
   line = $0
   sub(/\r$/, "", line)
   if (FNR == 1) {
     if (line == "---") infm = 1
-    else badstart = 1
+    else { badstart = 1; skip = 1 }
     next
   }
-  if (badstart) next
   if (infm == 1) {
     if (line == "---") { infm = 2; next }
     sep = index(line, ":")
@@ -148,7 +157,6 @@ function finish() {
     else if (key == "user-invocable") { invoc = val; hasinvoc = 1 }
     next
   }
-  if (line ~ /[^ \t]/) hasbody = 1
 }
 
 END {
