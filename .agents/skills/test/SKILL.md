@@ -13,6 +13,36 @@ Category: Development (Engineering) - Verification
 Prove behavior with tests derived from the requirements, and report what
 the proof actually covers - and what it does not.
 
+## Request validation (do this first)
+
+Before any work, verify the request is valid. A valid request:
+
+1. States what behavior to test and where it lives - the feature,
+   module, or acceptance criteria the tests must verify.
+2. Has an existing or in-progress implementation to test against. If
+   the behavior does not exist, return that as the error - tests cannot
+   specify fiction.
+3. Asks for test writing and verification - not for a complete task.
+
+If any check fails, stop and return an error message to the user naming
+exactly what is missing or invalid. Do not proceed on an ambiguous
+request.
+
+If the request asks specifically for end-to-end tests, the `e2e` skill
+owns it. If it asks for a complete task including tests, the `full`
+skill owns it.
+
+## When a composed skill is missing
+
+If a skill this one needs is not available - the load fails or it is
+absent from the session's skill list - do not improvise or continue
+without it. Ask the user to install the skill, then retry, for example:
+
+    npx skills add <owner>/agent-workflows-engineering --skill <name> -a <agent> -y
+
+or copy the skill folder into the agent's skills directory (see the
+README's Installation section), and reload the session.
+
 ## Workflow
 
 1. **Derive cases from the acceptance criterion.** For each criterion: the
@@ -30,7 +60,9 @@ the proof actually covers - and what it does not.
 
    Keep the pyramid shape: many unit, fewer integration, few end-to-end.
    When in doubt, drop one level lower - the lower level is faster and
-   pinpoints failures better.
+   pinpoints failures better. Load `unit-testing` or
+   `integration-testing` for the chosen level's guidance; end-to-end
+   level requests belong to the `e2e` skill.
 3. **Write the test first where practical.** For a bug fix, the failing
    test comes before the fix. For new behavior, a test that expresses the
    acceptance criterion is a executable specification.

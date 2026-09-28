@@ -1,7 +1,7 @@
 # agent-workflows-engineering
 
 A curated collection of skills for agent workflows, following the open
-[Agent Skills](https://agentskills.io) `SKILL.md` format. The same 21
+[Agent Skills](https://agentskills.io) `SKILL.md` format. The same 26
 skills live in one place - the cross-agent standard `.agents/skills/`
 directory (plus `.agents/agents/` for role skills) - and load natively
 in Mistral Vibe, Gemini CLI, Codex, Cursor, and OpenCode - see
@@ -16,7 +16,7 @@ bridged.
 │   ├── skills/              workflow skills: how to do a thing (flat, one level)
 │   │   ├── brainstorming/   design: brainstorming, research, planning
 │   │   ├── debug/           development: run, debug, test
-│   │   └── ...              one directory per skill, 15 in total
+│   │   └── ...              one directory per skill, 20 in total
 │   └── agents/              role skills: who does it
 │       ├── agent-start/     startup contract for every session
 │       ├── design/          design-agent
@@ -44,6 +44,29 @@ reads directly.
 Workflow skills define *how* to do a kind of work (debug, plan, test). Role
 skills define *how an agent operates* in a domain and compose the workflow
 skills for that domain.
+
+## Task routing
+
+Six routing skills select and compose the others by task shape. Every one
+of them validates the request first: an invalid request gets an error
+message naming what is missing - never a guess; a valid request is
+executed by loading the specific phase skills.
+
+| Skill | Loads when the user asks for | Composes |
+|---|---|---|
+| `full` | a complete task end to end | design, implementation, documentation, test, e2e |
+| `design` | design work only | brainstorming, research, planning |
+| `implementation` | implementing a change only | run, coding-standards, security-standards, debug |
+| `documentation` | documentation only | user-, technical-, api-documentation |
+| `test` | writing tests only | unit-testing, integration-testing |
+| `e2e` | end-to-end tests only | end-to-end-testing |
+
+Complete tasks go to `full`; separated tasks go to the phase skill.
+`full` must not be loaded for a separated task, and a phase skill must
+not silently absorb a complete one - each returns the routing error
+instead. If a composed skill is missing from the session, the routing
+skill asks the user to install it (via skills.sh or a manual copy) and
+retries - it never improvises a substitute.
 
 ## Skill format
 
@@ -144,7 +167,7 @@ How this repo supports it:
 
 Known scope: the six role skills under `.agents/agents/` are not
 discoverable by the CLI, because `.agents/agents/` is not one of its
-discovery containers - only the 15 workflow skills install via
+discovery containers - only the 20 workflow skills install via
 skills.sh. To publish the role skills too, they would move under
 `.agents/skills/agents/<name>/SKILL.md`.
 
@@ -192,7 +215,7 @@ same way, before any GitHub push:
 npx skills add /path/to/agent-workflows-engineering --list
 ```
 
-The 15 workflow skills install this way; the six role skills are not
+The 20 workflow skills install this way; the six role skills are not
 discoverable by the CLI - see
 [skills.sh support](#skillssh-support-npx-skills).
 
