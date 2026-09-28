@@ -28,6 +28,12 @@ for how each agent is bridged.
 ├── .gemini/skills/          generated mirror (Gemini CLI)
 ├── .codex/skills/           generated mirror (Codex)
 ├── .vibe/config.toml        Vibe skill_paths wiring
+├── .github/
+│   ├── workflows/skills.yml     CI: validate, mirror check, discovery, auto-sync
+│   ├── CONTRIBUTING.md         how to add a skill
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── ISSUE_TEMPLATE/          bug report, skill request
+│   └── CODEOWNERS
 ├── scripts/
 │   ├── validate-skills.mjs     frontmatter and name validation (CI-ready)
 │   └── sync-agent-skills.mjs   regenerates the mirrors (--check for CI)
