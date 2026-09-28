@@ -1,5 +1,8 @@
 # agent-workflows-engineering
 
+![Agent Workflows Engineering](./assets/cover.jpg)
+
+
 A curated collection of skills for agent workflows, following the open
 [Agent Skills](https://agentskills.io) `SKILL.md` format. The same 26
 skills live in one place - the cross-agent standard `.agents/skills/`
