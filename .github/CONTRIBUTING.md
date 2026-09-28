@@ -5,24 +5,21 @@ loadable in every supported agent; the README covers the background.
 
 ## Adding or changing a skill
 
-1. Edit the canonical skill under `.agents/` only. The directories
-   `.claude/`, `.gemini/`, and `.codex/` are generated mirrors - edits
-   there are overwritten by the sync script.
+1. Edit the canonical skill under `.agents/` only - there are no
+   mirrors or generated copies anywhere in the repo.
 2. Follow the house format: unquoted frontmatter with `name` and
    `description`, directory name equal to `name`, a body structured as
    purpose, workflow, standards or output, anti-patterns, escalation.
 3. Frontmatter values must not contain `': '` - unquoted YAML scalars
    with a colon-space break strict parsers and the skill gets skipped
    by skills.sh and any strict consumer.
-4. Validate, sync, and commit the regenerated mirrors:
+4. Validate and commit:
 
    ```bash
    node scripts/validate-skills.ts
-   node scripts/sync-agent-skills.mjs
    ```
 
-5. CI runs both plus a skills.sh discovery smoke test; mirror drift
-   fails the PR, and pushes are auto-synced by the `sync` job.
+5. CI runs validation plus a skills.sh discovery smoke test.
 
 ## Commits and PRs
 

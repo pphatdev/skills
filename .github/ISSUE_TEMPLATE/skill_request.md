@@ -10,9 +10,8 @@ labels: enhancement
 
 **Proposed placement**
 
-<!-- Workflow skills (how to do a thing): design / development / testing / documentation / rules.
-     Role skills (who does it): agents/<category>.
-     Only propose a new category if this skill cannot live in an existing one. -->
+<!-- Workflow skills (how to do a thing): directly under skills/ (flat).
+     Role skills (who does it): agents/<category>. -->
 
 **Draft instructions, if you have them**
 

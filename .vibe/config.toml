@@ -1,15 +1,13 @@
 # Project-local Vibe configuration.
-# Loads this collection's nested skill categories into Vibe's discovery.
-# Vibe discovers skills flat (one level of <dir>/<skill-name>/SKILL.md),
+# Loads this collection's skills into Vibe's discovery.
+# Workflow skills live flat under .agents/skills/
+# (<dir>/<skill-name>/SKILL.md), so the directory alone covers them.
+# Role skills keep their category subdirectories under .agents/agents/,
 # so each category directory is listed explicitly.
 
 skill_paths = [
-  # Workflow skills, by category
-  ".agents/skills/design",
-  ".agents/skills/development",
-  ".agents/skills/testing",
-  ".agents/skills/documentation",
-  ".agents/skills/rules",
+  # Workflow skills
+  ".agents/skills",
   # Agent role skills
   ".agents/agents",
   ".agents/agents/design",

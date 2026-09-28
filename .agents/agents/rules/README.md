@@ -6,7 +6,7 @@ Skills for governance agents.
   Audits against the project's standards and reports findings with
   severity, location, evidence, and remediation. Audit only; no
   unauthorized fixes.
-- Standards it enforces live under `skills/rules/` (coding, security,
+- Standards it enforces live under `skills/` (coding, security,
   performance).
 
 Add further skills as subdirectories, one `SKILL.md` per skill.

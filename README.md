@@ -2,47 +2,44 @@
 
 A curated collection of skills for agent workflows, following the open
 [Agent Skills](https://agentskills.io) `SKILL.md` format. The same 21
-skills load natively in Mistral Vibe, Claude Code, Gemini CLI, Codex,
-Cursor, and OpenCode - see [Multi-agent support](#multi-agent-support)
-for how each agent is bridged.
+skills live in one place - the cross-agent standard `.agents/skills/`
+directory (plus `.agents/agents/` for role skills) - and load natively
+in Mistral Vibe, Gemini CLI, Codex, Cursor, and OpenCode - see
+[Multi-agent support](#multi-agent-support) for how each agent is
+bridged.
 
 ## Structure
 
 ```
 .
 ├── .agents/                 canonical skills - edit here
-│   ├── skills/              workflow skills: how to do a thing
-│   │   ├── design/          brainstorming, research, planning
-│   │   ├── development/     run, debug, test
-│   │   ├── testing/         unit-testing, integration-testing, end-to-end-testing
-│   │   ├── documentation/   user-documentation, technical-documentation, api-documentation
-│   │   └── rules/           coding-standards, security-standards, performance-standards
+│   ├── skills/              workflow skills: how to do a thing (flat, one level)
+│   │   ├── brainstorming/   design: brainstorming, research, planning
+│   │   ├── debug/           development: run, debug, test
+│   │   └── ...              one directory per skill, 15 in total
 │   └── agents/              role skills: who does it
 │       ├── agent-start/     startup contract for every session
 │       ├── design/          design-agent
 │       ├── development/     development-agent
 │       ├── testing/         testing-agent
 │       ├── documentation/   documentation-agent
-│       └── rules/           governance-agent
-├── .claude/skills/          generated mirror (Claude Code; Cursor and OpenCode read it too)
-├── .gemini/skills/          generated mirror (Gemini CLI)
-├── .codex/skills/           generated mirror (Codex)
+│       └── rules/          governance-agent
 ├── .vibe/config.toml        Vibe skill_paths wiring
 ├── .github/
-│   ├── workflows/skills.yml     CI: validate, mirror check, discovery, auto-sync
+│   ├── workflows/skills.yml     CI: validate, discovery
 │   ├── CONTRIBUTING.md         how to add a skill
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   ├── ISSUE_TEMPLATE/          bug report, skill request
 │   └── CODEOWNERS
 ├── scripts/
-│   ├── validate-skills.ts     frontmatter and name validation (CI-ready)
-│   └── sync-agent-skills.mjs   regenerates the mirrors (--check for CI)
+│   └── validate-skills.ts     frontmatter and name validation (CI-ready)
 └── README.md
 ```
 
-Canonical skills live only under `.agents/`; the other dotted
-directories are configuration (`.vibe/`) or generated output
-(`.claude/`, `.gemini/`, `.codex/`) - never edited by hand.
+Canonical skills live only under `.agents/`; the only other dotted
+directory is configuration (`.vibe/`). There are no mirrors or generated
+copies - the flat layout under `.agents/skills/` is what every scanner
+reads directly.
 
 Workflow skills define *how* to do a kind of work (debug, plan, test). Role
 skills define *how an agent operates* in a domain and compose the workflow
@@ -79,14 +76,9 @@ Conventions this repo enforces:
 
 ## Adding a skill
 
-1. Pick the category directory (or create one only when a real task demands
-   it - do not add categories speculatively).
-2. Create `<category>/<skill-name>/SKILL.md` with valid frontmatter.
-3. If the category is new, add it to `skill_paths` in `.vibe/config.toml`.
-4. Validate: `node scripts/validate-skills.ts` - must exit 0.
-5. Sync the agent mirrors: `node scripts/sync-agent-skills.mjs` - and
-   commit the regenerated output.
-6. Reload in your session with `/reload` (Vibe) or start a new session
+1. Create `.agents/skills/<skill-name>/SKILL.md` with valid frontmatter.
+2. Validate: `node scripts/validate-skills.ts` - must exit 0.
+3. Reload in your session with `/reload` (Vibe) or start a new session
    (other agents).
 
 ## Validation
@@ -94,65 +86,38 @@ Conventions this repo enforces:
 ```bash
 node scripts/validate-skills.ts              # checks .agents/
 node scripts/validate-skills.ts DIR           # checks another root
-node scripts/sync-agent-skills.mjs --check     # mirrors must match source
 ```
 
 Exit code 0 means every skill passes: name slug and directory match,
 description length and YAML-safe values, no unknown frontmatter keys, no
-reserved or duplicate names, and the agent mirrors are current. All of
-this runs in CI - see [CI](#ci).
+reserved or duplicate names. All of this runs in CI - see [CI](#ci).
 
 ## Multi-agent support
 
 Every agent discovers skills flat (`<dir>/<skill-name>/SKILL.md`, one
-level), while this collection organizes canonical skills by category.
-Each supported agent is bridged accordingly:
+level), and that is exactly the layout under `.agents/skills/`. Each
+supported agent is bridged accordingly:
 
 | Agent | Discovery path | How it is provided |
 |---|---|---|
-| Mistral Vibe | `skill_paths` in `.vibe/config.toml` | committed config, points at category dirs |
-| Claude Code | `.claude/skills/` | generated mirror |
-| Gemini CLI | `.gemini/skills/` | generated mirror (run `/trust` first) |
-| Codex | `.codex/skills/` | generated mirror |
-| Cursor | reads `.claude/skills/` | via Claude Code compatibility |
-| OpenCode | reads `.claude/skills/` | via Claude Code compatibility |
+| Mistral Vibe | `skill_paths` in `.vibe/config.toml` | committed config, points at `.agents/skills/` and the role-skill categories |
+| Gemini CLI | `.agents/skills/` | native (run `/trust` first) |
+| Cursor | `.agents/skills/` | native |
+| OpenCode | `.agents/skills/` | native |
+| Codex | `.agents/skills/` | native scan (undocumented depth) |
+| Claude Code | `.claude/skills/` | not discovered in this repo - install via skills.sh or copy manually |
 
-Mirrors are generated, not edited: `scripts/sync-agent-skills.mjs` wipes
-and rebuilds them from the canonical tree under `.agents/`, and
-`--check` fails if they drift. Symlinks were considered and rejected:
-they are unreliable in Windows git checkouts, and Claude Code is the only
-agent documented to follow them.
+The collection previously mirrored `.agents/` into `.claude/skills/`,
+`.gemini/skills/`, and `.codex/skills/` generated directories. Those
+mirrors were removed in favor of the flat canonical layout: one source
+of truth, no generated output, no sync script. The trade-off is
+documented above - Claude Code does not read `.agents/`, so it needs a
+one-time install (see [Installation](#installation)) instead of native
+discovery.
 
-### Why not `.agents/skills/` alone?
-
-`.agents/skills/` is the cross-agent standard directory, so it is fair to
-ask why the skills are mirrored at all. Two reasons:
-
-1. **Claude Code does not read `.agents/`** - it only discovers skills in
-   `.claude/skills/` (plus personal, plugin, and enterprise locations).
-   At least one generated adapter is unavoidable for Claude Code support.
-2. **The canonical tree is nested, every scanner is flat.** The agents
-   that do read `.agents/skills/` scan it one level deep
-   (`skills/*/SKILL.md`): Cursor, OpenCode, and Gemini all check for
-   `design/SKILL.md` and stop there. This collection keeps skills at
-   `.agents/skills/<category>/<skill>/SKILL.md` - two levels - so the
-   standard directory is invisible to those scanners as-is. Vibe is the
-   exception: its `skill_paths` config accepts arbitrary directories,
-   which is how `.vibe/config.toml` bridges the categories without
-   copies.
-
-The alternative - flattening the canonical tree to
-`.agents/skills/<skill-name>/` - would make Cursor, OpenCode, Gemini,
-and Vibe work natively with no mirrors, leaving one mirror for Claude
-Code only. It was not chosen because it costs the category grouping this
-collection is organized around. If that trade becomes worth making, the
-restructure is: flatten `.agents/skills/`, reduce the sync targets to
-`.claude/skills/`, and update the validator and Vibe config.
-
-Known caveat: Codex also scans `.agents/skills/` in repositories with
-undocumented depth. If it scans recursively, Codex sees each skill twice
-(same name and content - harmless, but noisy). If that happens, remove
-`.codex/skills/` from the sync targets and rely on Codex's native scan.
+The six role skills stay under `.agents/agents/<category>/<name>/`
+because Vibe's `skill_paths` config reaches them directly; flat scanners
+do not scan `.agents/agents/`, so they are not duplicated there.
 
 ### skills.sh support (`npx skills`)
 
@@ -168,13 +133,8 @@ npx skills add <owner>/agent-workflows-engineering --skill debug -a claude-code 
 How this repo supports it:
 
 - The canonical workflow skills under `.agents/skills/` are discovered
-  natively: the CLI walks its discovery containers up to three levels
-  deep, which covers the category layout.
-- Generated mirrors are marked `metadata.internal: true` - the CLI's
-  documented mechanism for hiding skills from discovery. Without it,
-  every skill would be listed twice, because `.claude/skills/` is also
-  a discovery container. Verified against the real CLI: 15 skills
-  listed, no duplicates, no warnings.
+  natively: the CLI walks its discovery containers, and the flat
+  `<skill-name>/SKILL.md` layout matches what it scans for.
 - Frontmatter values must not contain `': '`: unquoted YAML scalars
   with a colon-space break strict parsers (the CLI skips such skills
   entirely). The validator rejects them.
@@ -195,13 +155,7 @@ skills.sh. To publish the role skills too, they would move under
 | Job | When | What it does |
 |---|---|---|
 | validate | PR + push | `validate-skills.ts` - frontmatter, names, duplicates |
-| check-mirrors | PR | `sync-agent-skills.mjs --check` - fails the PR if mirrors drifted; run the sync locally and push |
 | discovery | PR + push | `npx skills add . --list` - the skills.sh CLI must find the collection with no parse errors |
-| sync | push only | regenerates the mirrors and auto-commits any drift as `skills-sync[bot]` |
-
-The sync job is the CD half: even if a change lands without running the
-sync locally, the mirrors are regenerated and pushed automatically with
-a `[skip ci]` commit.
 
 ## Installation
 
@@ -213,10 +167,11 @@ Every agent discovers the skills automatically:
 
 | Agent | Setup |
 |---|---|
-| Claude Code, Cursor, OpenCode | none - they read `.claude/skills/` on session start |
-| Gemini CLI | run `/trust` once - reads `.gemini/skills/` |
-| Codex | none - reads `.codex/skills/` and scans `.agents/skills/` |
+| Gemini CLI | run `/trust` once - reads `.agents/skills/` |
+| Cursor, OpenCode | none - they read `.agents/skills/` on session start |
+| Codex | none - it scans `.agents/skills/` |
 | Mistral Vibe | trust the folder when prompted, then `/reload` - `skill_paths` is already wired |
+| Claude Code | not auto-discovered - use option 2 or 3 below to install into `.claude/skills/` |
 
 ### 2. Into another project - via skills.sh (recommended)
 
@@ -247,7 +202,7 @@ Each skill is a self-contained folder; copy it into your agent's
 skills directory:
 
 ```
-.agents/skills/<category>/<skill-name>/  ->  <agent-skills-dir>/<skill-name>/
+.agents/skills/<skill-name>/  ->  <agent-skills-dir>/<skill-name>/
 ```
 
 | Agent | Skills directory |
