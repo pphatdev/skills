@@ -102,6 +102,37 @@ and rebuilds them from the canonical tree under `.agents/`, and
 they are unreliable in Windows git checkouts, and Claude Code is the only
 agent documented to follow them.
 
+### Why not `.agents/skills/` alone?
+
+`.agents/skills/` is the cross-agent standard directory, so it is fair to
+ask why the skills are mirrored at all. Two reasons:
+
+1. **Claude Code does not read `.agents/`** - it only discovers skills in
+   `.claude/skills/` (plus personal, plugin, and enterprise locations).
+   At least one generated adapter is unavoidable for Claude Code support.
+2. **The canonical tree is nested, every scanner is flat.** The agents
+   that do read `.agents/skills/` scan it one level deep
+   (`skills/*/SKILL.md`): Cursor, OpenCode, and Gemini all check for
+   `design/SKILL.md` and stop there. This collection keeps skills at
+   `.agents/skills/<category>/<skill>/SKILL.md` - two levels - so the
+   standard directory is invisible to those scanners as-is. Vibe is the
+   exception: its `skill_paths` config accepts arbitrary directories,
+   which is how `.vibe/config.toml` bridges the categories without
+   copies.
+
+The alternative - flattening the canonical tree to
+`.agents/skills/<skill-name>/` - would make Cursor, OpenCode, Gemini,
+and Vibe work natively with no mirrors, leaving one mirror for Claude
+Code only. It was not chosen because it costs the category grouping this
+collection is organized around. If that trade becomes worth making, the
+restructure is: flatten `.agents/skills/`, reduce the sync targets to
+`.claude/skills/`, and update the validator and Vibe config.
+
+Known caveat: Codex also scans `.agents/skills/` in repositories with
+undocumented depth. If it scans recursively, Codex sees each skill twice
+(same name and content - harmless, but noisy). If that happens, remove
+`.codex/skills/` from the sync targets and rely on Codex's native scan.
+
 ## Using the collection in a project
 
 Vibe discovers skills flat (`<dir>/<skill-name>/SKILL.md`, one level), so
