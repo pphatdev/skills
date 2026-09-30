@@ -95,9 +95,11 @@ block comments. Full placeholder templates per language: see
 
 ## Escalation
 
-- No formatter exists and the repo has no style config: match the
-  prevailing style of neighboring files and say so - do not introduce a
-  formatter unasked.
+- No formatter exists and the repo has no style config: load
+  `formatting-init` to ask the user for their preferences (tab size,
+  indent style, line endings, comment style) and write them to
+  `.editorconfig` - or match the prevailing style of neighboring files
+  and say so.
 - The formatter and the lint rules conflict: treat the repo's CI as
   the source of truth and surface the conflict to the user instead of
   picking a side.
